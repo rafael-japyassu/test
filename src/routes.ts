@@ -7,9 +7,12 @@ import {
 	Router,
 } from "express";
 import jsonwebtoken from "jsonwebtoken";
+import { UserController } from "./controllers/user";
 import { prisma } from "./database/prisma";
 
 export const routes = Router();
+
+const userController = new UserController();
 
 routes.post("/users", async (req: Request, res: Response) => {
 	const { name, email, password } = req.body;
@@ -42,11 +45,7 @@ routes.post("/users", async (req: Request, res: Response) => {
 });
 
 routes.get("/users", async (req: Request, res: Response) => {
-	const users = await prisma.user.findMany({
-		omit: {
-			password: true,
-		},
-	});
+	const users = await userController.findAll();
 
 	res.json(users);
 });
